@@ -1,0 +1,67 @@
+name: GitHub Actions Demo Kubernetes Deployment
+run-name: ${{ github.actor }} is testing GitHubActions Kubernetes Deployment🚀
+on:  
+  workflow_dispatch:
+  push:
+    branches:
+      - deployment_production
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+jobs:
+  docker:
+    name: Login and build docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout deployment_production branch
+        uses: actions/checkout@v4
+        with:
+          ref: deployment_production
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-actions@v3
+      - name: Login to Harbor Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: '${{ secrets.HARBOR_URL }}'
+          username: '${{ secrets.HARBOR_USERNAME }}'
+          password: '${{ secrets.HARBOR_TOKEN }}'
+      - name: Build and Push Image to Harbor Container Registry
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: github-actions/example:latest
+  kubernetes:
+    name: Deployment to k8s
+    needs: [ docker ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.6'
+        id: install
+      - uses: azure/k8s-set-context@v4
+        with:
+          method: service-account
+          k8s-url: '${{ secrets.K8S_URL }}'
+          k8s-secret: '${{ secrets.SA_TOKEN }}'
+      - name: Set imagePullSecret
+        uses: azure/k8s-create-secret@v4
+        with: 
+          namespace: 'github-actions'
+          secret-name: 'regcred'
+          container-registry-url: '${{ secrets.HARBOR_URL }}'
+          container-registry-username: ${{ secrets.HARBOR_USERNAME }}'
+          container-registry-password: ${{ secrets.HARBOR_TOKEN }}'
+      - uses: azure/k8s-deploy@v5
+        with:
+          namespace: github-actions
+          imagepullsecrets: |
+            regcred
+          manifests: |
+            manifests/deployment.taml
+            manifests/service.yaml
+            manifests/ingress.yaml
