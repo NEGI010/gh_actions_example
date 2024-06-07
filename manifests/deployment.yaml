@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: github-actions-example
+  name: github-actions-example
+  namespace: github-actions
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: github-actions-example
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: github-actions-example
+    spec:
+      containers:
+      - image: harbor.hackathon.service.arvato-systems.de/github-actions/example:latest
+        name: example
+        ports:
+        - containerPort: 80
+        resources: {}
+status: {}
