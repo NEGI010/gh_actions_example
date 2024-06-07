@@ -50,14 +50,14 @@ jobs:
           method: service-account
           k8s-url: '${{ secrets.K8S_URL }}'
           k8s-secret: '${{ secrets.SA_TOKEN }}'
-      - name: Set imagePullSecret
-        uses: azure/k8s-create-secret@v4
-        with: 
-          namespace: 'github-actions'
-          secret-name: 'regcred'
-          container-registry-url: '${{ secrets.HARBOR_URL }}'
-          container-registry-username: ${{ secrets.HARBOR_USERNAME }}'
-          container-registry-password: ${{ secrets.HARBOR_TOKEN }}'
+          #     - name: Set imagePullSecret
+          #       uses: azure/k8s-create-secret@v4
+          #       with: 
+          #         namespace: 'github-actions'
+          #         secret-name: 'regcred'
+          #         container-registry-url: '${{ secrets.HARBOR_URL }}'
+          #         container-registry-username: ${{ secrets.HARBOR_USERNAME }}'
+          #         container-registry-password: ${{ secrets.HARBOR_TOKEN }}'
       - uses: azure/k8s-deploy@v5
         with:
           namespace: github-actions
@@ -66,4 +66,3 @@ jobs:
           manifests: |
             manifests/deployment.taml
             manifests/service.yaml
-            manifests/ingress.yaml
