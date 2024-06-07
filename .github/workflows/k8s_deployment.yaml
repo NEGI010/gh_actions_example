@@ -11,6 +11,7 @@ permissions:
   actions: read
 jobs:
   docker:
+    environment: production
     name: Login and build docker image
     runs-on: ubuntu-latest
     steps:
@@ -36,6 +37,7 @@ jobs:
           tags: github-actions/example:latest
   kubernetes:
     name: Deployment to k8s
+    environment: production
     needs: [ docker ]
     runs-on: ubuntu-latest
     steps:
