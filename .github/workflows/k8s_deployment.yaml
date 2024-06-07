@@ -49,7 +49,7 @@ jobs:
         with:
           method: service-account
           k8s-url: '${{ secrets.K8S_URL }}'
-          token: '${{ secrets.SA_TOKEN }}'
+          k8s-secret: '${{ secrets.SA_TOKEN }}'
       - name: Set imagePullSecret
         uses: azure/k8s-create-secret@v4
         with: 
