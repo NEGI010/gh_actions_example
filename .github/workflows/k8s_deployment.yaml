@@ -64,5 +64,5 @@ jobs:
           imagepullsecrets: |
             regcred
           manifests: |
-            manifests/deployment.taml
+            manifests/deployment.yaml
             manifests/service.yaml
