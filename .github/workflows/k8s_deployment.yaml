@@ -34,7 +34,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: github-actions/example:latest
+          tags: ${{ secrets.HARBOR_URL }}/github-actions/example:latest
   kubernetes:
     name: Deployment to k8s
     environment: production
