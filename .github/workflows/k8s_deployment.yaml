@@ -41,6 +41,9 @@ jobs:
     needs: [ docker ]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: deployment_production
       - uses: azure/setup-kubectl@v3
         with:
           version: 'v1.28.6'
