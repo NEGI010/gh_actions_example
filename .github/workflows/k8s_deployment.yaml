@@ -45,19 +45,11 @@ jobs:
         with:
           version: 'v1.28.6'
         id: install
-      - name: Create Service Account Secret
-        uses: azure/k8s-create-secret@v4
-        with:
-          namespace: github-actions
-          secret-type: 'generic'
-          secret-name: 'github-actions-sa'
-          string-data: '${{ secrets.SA_TOKEN }}'
-        id: create-sa-secret
       - uses: azure/k8s-set-context@v4
         with:
           method: service-account
           k8s-url: '${{ secrets.K8S_URL }}'
-          k8s-secret: github-actions-sa
+          token: '${{ secrets.SA_TOKEN }}'
       - name: Set imagePullSecret
         uses: azure/k8s-create-secret@v4
         with: 
